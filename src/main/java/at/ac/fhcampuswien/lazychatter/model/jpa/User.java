@@ -1,6 +1,6 @@
 package at.ac.fhcampuswien.lazychatter.model.jpa;
 
-import at.ac.fhcampuswien.lazychatter.model.dto.UserDto;
+import at.ac.fhcampuswien.lazychatter.model.dto.UserInput;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,9 +30,9 @@ public class User implements UserDetails {
         this.passwordHash= null;
     }
 
-    public User(UserDto userDto){
-        this.username = userDto.getUsername();
-        this.passwordHash = this.hashPassword(userDto.getPassword());
+    public User(UserInput userInput){
+        this.username = userInput.getUsername();
+        this.passwordHash = this.hashPassword(userInput.getPassword());
     }
 
     public String getId() {

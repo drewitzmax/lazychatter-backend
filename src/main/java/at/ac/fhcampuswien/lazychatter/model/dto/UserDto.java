@@ -1,26 +1,17 @@
 package at.ac.fhcampuswien.lazychatter.model.dto;
 
+import at.ac.fhcampuswien.lazychatter.model.jpa.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
-import java.util.List;
-
+@XmlRootElement
 public class UserDto {
     @JsonProperty
+    private String id;
+    @JsonProperty
     private String username;
-    @JsonProperty
-    private String password;
-    @JsonProperty
-    private List<String> chatIds;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public List<String> getChatIds() {
-        return chatIds;
+    public UserDto(User user){
+        this.id = user.getId();
+        this.username = user.getUsername();
     }
 }
