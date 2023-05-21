@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.lazychatter.config;
 
+import at.ac.fhcampuswien.lazychatter.security.JwtFilter;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -25,6 +26,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 import java.io.ByteArrayInputStream;
@@ -37,13 +39,14 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 public class LazyChatterSecurityConfig {
-    @Value("${jwt.public.key}")
-    private RSAPublicKey key;
-    @Value("${jwt.private.key}")
-    private RSAPrivateKey priv;
-
     @Autowired
     private UserDetailsService userDetailsService;
+
+    private final JwtFilter jwtFilter;
+
+    public LazyChatterSecurityConfig(JwtFilter jwtFilter){
+        this.jwtFilter = jwtFilter;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -52,10 +55,10 @@ public class LazyChatterSecurityConfig {
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/user/register", "/login", "/h2-console/**").permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().hasAuthority("USER"))
                 .formLogin(form -> form.disable())
-                .httpBasic(withDefaults()).build();
-
+                .httpBasic(withDefaults())
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class).build();
     }
 
     @Bean
@@ -69,17 +72,5 @@ public class LazyChatterSecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withPublicKey(key).build();
-    }
-
-    @Bean
-    JwtEncoder jwtEncoder() {
-        JWK jwk = new RSAKey.Builder(this.key).privateKey(this.priv).build();
-        JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
-        return new NimbusJwtEncoder(jwks);
     }
 }
