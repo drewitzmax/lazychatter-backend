@@ -1,4 +1,4 @@
-package at.ac.fhcampuswien.lazychatter.config;
+package at.ac.fhcampuswien.lazychatter.security;
 
 import at.ac.fhcampuswien.lazychatter.security.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
