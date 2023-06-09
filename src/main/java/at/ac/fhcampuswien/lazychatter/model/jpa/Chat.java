@@ -27,6 +27,7 @@ public class Chat {
 
     public void addParticipant(User participant){
         this.participants.add(participant);
+        participant.getChatList().add(this);
     }
 
     public void addMessage(Message message){

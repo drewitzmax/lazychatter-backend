@@ -24,15 +24,15 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void sendMessage(MessageDTO msg, Authentication auth) {
-        Chat chat = chatRepository.getReferenceById(msg.getChatID());
+        Chat chat = chatRepository.findById(msg.getChatID()).get();
         User user = userRepository.getUserByUsername(auth.getName());
         Message message = new Message(msg, user, chat);
         messageRepository.saveAndFlush(message);
     }
 
     @Override
-    public List<MessageDTO> getMessagesByChatId(String chatId, Authentication auth) throws Exception {
-        Chat chat = this.chatRepository.getReferenceById(chatId);
+    public List<Message> getMessagesByChatId(String chatId, Authentication auth) throws Exception {
+        Chat chat = this.chatRepository.findById(chatId).get();
         boolean isParticipant = false;
         for(User user: chat.getParticipants()){
             if(user.getUsername().equals(auth.getName())){
@@ -42,6 +42,6 @@ public class MessageServiceImpl implements MessageService {
         }
         if(!isParticipant) throw new Exception("Not authorized for this Resource");
         List<Message> messages = messageRepository.getMessagesByChatId(chatId);
-        return null;
+        return messages;
     }
 }

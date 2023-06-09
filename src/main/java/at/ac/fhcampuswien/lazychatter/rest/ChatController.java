@@ -1,8 +1,6 @@
 package at.ac.fhcampuswien.lazychatter.rest;
 
 import at.ac.fhcampuswien.lazychatter.model.dto.ChatDTO;
-import at.ac.fhcampuswien.lazychatter.model.jpa.Chat;
-import at.ac.fhcampuswien.lazychatter.repository.ChatRepository;
 import at.ac.fhcampuswien.lazychatter.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

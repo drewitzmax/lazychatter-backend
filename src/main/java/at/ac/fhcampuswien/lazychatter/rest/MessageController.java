@@ -1,7 +1,6 @@
 package at.ac.fhcampuswien.lazychatter.rest;
 
 import at.ac.fhcampuswien.lazychatter.model.dto.MessageDTO;
-import at.ac.fhcampuswien.lazychatter.model.jpa.Message;
 import at.ac.fhcampuswien.lazychatter.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -22,9 +21,9 @@ public class MessageController {
         return;
     }
 
-    @GetMapping(path = "chat/{chatId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/chat/{chatId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<MessageDTO> getMessagesByChatId(@PathVariable String chatId, Authentication auth) throws Exception {
-        List<MessageDTO> messages = messageService.getMessagesByChatId(chatId, auth);
+        List<MessageDTO> messages = messageService.getMessagesByChatId(chatId, auth).stream().map(message -> new MessageDTO(message)).toList();
         return messages;
     }
 }

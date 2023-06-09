@@ -1,6 +1,5 @@
 package at.ac.fhcampuswien.lazychatter.security;
 
-import at.ac.fhcampuswien.lazychatter.security.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +36,7 @@ public class LazyChatterSecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
+                .headers(headers-> headers.frameOptions().disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/user/register", "/login", "/h2-console/**").permitAll()
                         .anyRequest().hasAuthority("USER"))
