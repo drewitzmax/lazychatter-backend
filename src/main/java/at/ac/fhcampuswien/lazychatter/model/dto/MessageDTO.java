@@ -1,5 +1,7 @@
 package at.ac.fhcampuswien.lazychatter.model.dto;
 
+import at.ac.fhcampuswien.lazychatter.model.jpa.AiMessageOption;
+import at.ac.fhcampuswien.lazychatter.model.jpa.Message;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class MessageDTO {
@@ -9,6 +11,15 @@ public class MessageDTO {
     String messageText;
     @JsonProperty
     String aiOptions;
+
+    public MessageDTO(){}
+
+    public MessageDTO (Message message){
+        this.chatID = message.getId();
+        this.messageText = message.getTextMessage();
+        if(message.getAiOption() != null)
+            this.aiOptions = message.getAiOption().name();
+    }
 
 
     public String getAiOptions() {

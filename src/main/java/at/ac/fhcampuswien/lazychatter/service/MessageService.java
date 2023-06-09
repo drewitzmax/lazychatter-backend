@@ -3,6 +3,10 @@ package at.ac.fhcampuswien.lazychatter.service;
 import at.ac.fhcampuswien.lazychatter.model.dto.MessageDTO;
 import org.springframework.security.core.Authentication;
 
+import java.util.List;
+
 public interface MessageService {
-    void sendMassage(MessageDTO message, Authentication auth);
+    void sendMessage(MessageDTO message, Authentication auth);
+
+    List<MessageDTO> getMessagesByChatId(String chatId, Authentication auth) throws Exception;
 }

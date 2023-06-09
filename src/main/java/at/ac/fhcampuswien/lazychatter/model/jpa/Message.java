@@ -22,8 +22,33 @@ public class Message {
 
     public Message(MessageDTO message, User sender, Chat chat){
         textMessage = message.getMessageText();
-        aiOption = AiMessageOption.valueOf(message.getAiOptions());
+        if(message.getAiOptions() != null)
+            aiOption = AiMessageOption.valueOf(message.getAiOptions());
         this.chat = chat;
         this.sender = sender;
+    }
+
+    public Message() {
+
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getTextMessage() {
+        return textMessage;
+    }
+
+    public Chat getChat() {
+        return chat;
+    }
+
+    public User getSender() {
+        return sender;
+    }
+
+    public AiMessageOption getAiOption() {
+        return aiOption;
     }
 }
