@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +17,7 @@ public class ChatController {
     private ChatService chatService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ChatDTO startNewChat(Authentication auth){
-        return new ChatDTO(this.chatService.createNewChat(auth.getName()));
+    public ChatDTO startNewChat(Authentication auth, @RequestBody String[] participants){
+        return new ChatDTO(this.chatService.createNewChat(auth.getName(), participants));
     }
 }

@@ -1,7 +1,6 @@
 package at.ac.fhcampuswien.lazychatter.service;
 
 import at.ac.fhcampuswien.lazychatter.model.jpa.Chat;
-import at.ac.fhcampuswien.lazychatter.model.jpa.User;
 import at.ac.fhcampuswien.lazychatter.repository.ChatRepository;
 import at.ac.fhcampuswien.lazychatter.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +14,19 @@ public class ChatServiceImpl implements ChatService{
     UserRepository userRepository;
 
     @Override
-    public Chat createNewChat(String name) {
+    public Chat createNewChat(String ownName, String[] participants) {
         Chat chat = new Chat();
-        User owner = userRepository.getUserByUsername(name);
-        chat.addParticipant(owner);
+        chat.addParticipant(userRepository.getUserByUsername(ownName));
+        for(String participant : participants)
+        addUserToChat(participant, chat.getId());
         chat = chatRepository.saveAndFlush(chat);
+        return chat;
+    }
+
+    @Override
+    public Chat addUserToChat(String participant, String chatId) {
+        Chat chat = chatRepository.findById(chatId).get();
+            chat.addParticipant(userRepository.getUserByUsername(participant));
         return chat;
     }
 }
