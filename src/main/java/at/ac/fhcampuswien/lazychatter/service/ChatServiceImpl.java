@@ -31,19 +31,26 @@ public class ChatServiceImpl implements ChatService{
     }
 
     public Chat addUsersToChat(Authentication auth, String[] participants, String chatId) throws UsernameNotFoundException{
-        Optional<Chat> chatOptional = chatRepository.findById(chatId);
-        if(chatOptional.isEmpty()){
-            throw new ResourceAccessException("Resource could not be found");
-        }
-        Chat chat = chatOptional.get();
-        if(!isParticipant(auth, chat)){
-           throw new AccessDeniedException("Accessing user is not authorized on this resource");
-        }
+        Chat chat = obtainChatById(chatId);
+        checkAuthorizationOnChat(auth, chat);
         for(String participant: participants){
             addUserToChat(participant, chat);
         }
         chatRepository.saveAndFlush(chat);
         return chat;
+    }
+    private Chat obtainChatById(String chatId) throws ResourceAccessException{
+        Optional<Chat> chatOptional = chatRepository.findById(chatId);
+        if(chatOptional.isEmpty()){
+            throw new ResourceAccessException("Resource could not be found");
+        }
+        return chatOptional.get();
+    }
+
+    private void checkAuthorizationOnChat(Authentication auth, Chat chat) throws AccessDeniedException{
+        if(!isParticipant(auth, chat)){
+            throw new AccessDeniedException("Accessing user is not authorized on this resource");
+        }
     }
 
     private Chat addUserToChat(String participant, Chat chat) throws UsernameNotFoundException{
