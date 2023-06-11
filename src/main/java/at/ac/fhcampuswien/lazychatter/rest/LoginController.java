@@ -20,7 +20,7 @@ public class LoginController {
     UserService userService;
     @PostMapping
     public String login(Authentication auth){
-        User user = userService.getUserDetailsByName(auth.getName());
+        User user = userService.getUserByName(auth.getName());
         if(user == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Userdata could not be found.");
         }

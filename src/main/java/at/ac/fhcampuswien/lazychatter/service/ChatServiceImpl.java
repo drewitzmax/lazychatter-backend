@@ -24,22 +24,28 @@ public class ChatServiceImpl implements ChatService{
     public Chat createNewChat(Authentication auth, String[] participants) throws UsernameNotFoundException{
         Chat chat = new Chat();
         chat.addParticipant(userRepository.getUserByUsername(auth.getName()));
-        for(String participant : participants)
-        addUserToChat(participant, chat);
+
+        for(String participant : participants) addUserToChat(participant, chat);
+
         chat = chatRepository.saveAndFlush(chat);
         return chat;
     }
 
     public Chat addUsersToChat(Authentication auth, String[] participants, String chatId) throws UsernameNotFoundException{
-        Chat chat = obtainChatById(chatId);
-        checkAuthorizationOnChat(auth, chat);
+        Chat chat = obtainChatById(auth, chatId);
         for(String participant: participants){
             addUserToChat(participant, chat);
         }
         chatRepository.saveAndFlush(chat);
         return chat;
     }
-    private Chat obtainChatById(String chatId) throws ResourceAccessException{
+    public Chat obtainChatById(Authentication auth ,String chatId) throws ResourceAccessException, AccessDeniedException{
+        Chat chat = findChatById(chatId);
+        checkAuthorizationOnChat(auth, chat);
+        return chat;
+    }
+
+    private Chat findChatById(String chatId) throws ResourceAccessException{
         Optional<Chat> chatOptional = chatRepository.findById(chatId);
         if(chatOptional.isEmpty()){
             throw new ResourceAccessException("Resource could not be found");

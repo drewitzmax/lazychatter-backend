@@ -6,7 +6,11 @@ import at.ac.fhcampuswien.lazychatter.model.dto.UserInput;
 import at.ac.fhcampuswien.lazychatter.model.jpa.User;
 import at.ac.fhcampuswien.lazychatter.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
+
+import java.util.Optional;
 
 @Controller
 public class UserServiceImpl implements UserService {
@@ -15,26 +19,39 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createUser(UserInput user){
-        if(user.getUsername() == null) throw new IllegalArgumentException("Username may not be null");
-        if(user.getPassword() == null || user.getPassword().length() < 6 || user.getPassword().length() > 128){
-            throw new IllegalArgumentException("Password must be between 6 and 128 characters long!");
-        }
-        UserDto existingUser = getUserByName(user.getUsername());
+        validateUserInput(user);
+        Optional<User> existingUser = userRepository.findUserByUsername(user.getUsername());
 
-        if(existingUser != null) throw new UserAlreadyExistsException("Username is already taken");
+        if(existingUser.isPresent()) throw new UserAlreadyExistsException("Username is already taken");
         userRepository.save(new User(user));
     }
 
     @Override
-    public UserDto getUserByName(String name) {
-        User user = userRepository.getUserByUsername(name);
-        if(user == null){
-            return null;
+    public User getUserByName(String name) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findUserByUsername(name);
+        if(user.isEmpty()){
+            throw new UsernameNotFoundException("User could not be found");
         }
-        return new UserDto(user);
+        return user.get();
     }
 
-    public User getUserDetailsByName(String name){
-        return userRepository.getUserByUsername(name);
+    @Override
+    public User getMe(Authentication auth) throws UsernameNotFoundException {
+        return getUserByName(auth.getName());
+    }
+
+    private void validateUserInput(UserInput user) throws IllegalArgumentException{
+        validateUsername(user.getUsername());
+        validatePassword(user.getPassword());
+    }
+
+    private void validateUsername(String username){
+        if(username == null || username.length() < 3) throw new IllegalArgumentException("Username may not be less than 3 characters");
+    }
+
+    private void validatePassword(String password){
+        if(password == null || password.length() < 6 || password.length() > 128){
+            throw new IllegalArgumentException("Password must be between 6 and 128 characters long!");
+        }
     }
 }

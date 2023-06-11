@@ -10,38 +10,30 @@ import at.ac.fhcampuswien.lazychatter.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.util.List;
 
 @Controller
 public class MessageServiceImpl implements MessageService {
     @Autowired
-    ChatRepository chatRepository;
+    ChatService chatService;
     @Autowired
     MessageRepository messageRepository;
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
     @Override
     public void sendMessage(MessageDTO msg, Authentication auth) {
-        Chat chat = chatRepository.findById(msg.getChatID()).get();
-        User user = userRepository.getUserByUsername(auth.getName());
+        Chat chat = chatService.obtainChatById(auth, msg.getChatID());
+        User user = userService.getMe(auth);
         Message message = new Message(msg, user, chat);
         messageRepository.saveAndFlush(message);
     }
 
     @Override
-    public List<Message> getMessagesByChatId(String chatId, Authentication auth) throws Exception {
-        Chat chat = this.chatRepository.findById(chatId).get();
-        boolean isParticipant = false;
-        for(User user: chat.getParticipants()){
-            if(user.getUsername().equals(auth.getName())){
-                isParticipant = true;
-                break;
-            };
-        }
-        if(!isParticipant) throw new Exception("Not authorized for this Resource");
-        List<Message> messages = messageRepository.getMessagesByChatId(chatId);
-        return messages;
+    public List<Message> getMessagesByChatId(String chatId, Authentication auth) throws ResourceAccessException {
+        Chat chat = this.chatService.obtainChatById(auth, chatId);
+        return chat.getMessages();
     }
 }

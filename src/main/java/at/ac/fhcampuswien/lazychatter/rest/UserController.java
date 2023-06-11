@@ -3,6 +3,7 @@ package at.ac.fhcampuswien.lazychatter.rest;
 import at.ac.fhcampuswien.lazychatter.error.UserAlreadyExistsException;
 import at.ac.fhcampuswien.lazychatter.model.dto.UserDto;
 import at.ac.fhcampuswien.lazychatter.model.dto.UserInput;
+import at.ac.fhcampuswien.lazychatter.model.jpa.User;
 import at.ac.fhcampuswien.lazychatter.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,11 +22,11 @@ public class UserController {
     @GetMapping(path ="/me",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<UserDto> getMyUserData(Authentication auth){
-        UserDto user = userService.getUserByName(auth.getName());
+        User user = userService.getUserByName(auth.getName());
         if(user == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Userdata could not be found.");
         }else{
-            return ResponseEntity.ok(user);
+            return ResponseEntity.ok(new UserDto(user));
         }
     }
 
