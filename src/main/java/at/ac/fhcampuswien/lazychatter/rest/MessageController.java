@@ -29,4 +29,9 @@ public class MessageController {
         List<MessageDTO> messages = messageService.getMessagesByChatId(chatId, auth).stream().map(message -> new MessageDTO(message)).toList();
         return messages;
     }
+
+    @DeleteMapping(path="/{messageId}")
+    public void deleteMessageById(@PathVariable String messageId, Authentication auth){
+        messageService.deleteMessageById(messageId, auth);
+    }
 }

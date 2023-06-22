@@ -10,4 +10,6 @@ public interface MessageService {
     void sendMessage(MessageDTO message, Authentication auth);
 
     List<Message> getMessagesByChatId(String chatId, Authentication auth) throws Exception;
+
+    void deleteMessageById(String messageId, Authentication auth);
 }

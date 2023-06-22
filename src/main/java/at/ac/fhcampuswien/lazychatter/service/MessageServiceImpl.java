@@ -4,9 +4,7 @@ import at.ac.fhcampuswien.lazychatter.model.dto.MessageDTO;
 import at.ac.fhcampuswien.lazychatter.model.jpa.Chat;
 import at.ac.fhcampuswien.lazychatter.model.jpa.Message;
 import at.ac.fhcampuswien.lazychatter.model.jpa.User;
-import at.ac.fhcampuswien.lazychatter.repository.ChatRepository;
 import at.ac.fhcampuswien.lazychatter.repository.MessageRepository;
-import at.ac.fhcampuswien.lazychatter.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -35,5 +33,15 @@ public class MessageServiceImpl implements MessageService {
     public List<Message> getMessagesByChatId(String chatId, Authentication auth) throws ResourceAccessException {
         Chat chat = this.chatService.obtainChatById(auth, chatId);
         return chat.getMessages();
+    }
+
+    @Override
+    public void deleteMessageById(String messageId, Authentication auth) {
+        Message message = messageRepository.getReferenceById(messageId);
+        if(message.getSender().equals(auth.getName())){
+            messageRepository.delete(message);
+        } else {
+            throw new RuntimeException("You're not authorized to manipulate this object");
+        }
     }
 }
