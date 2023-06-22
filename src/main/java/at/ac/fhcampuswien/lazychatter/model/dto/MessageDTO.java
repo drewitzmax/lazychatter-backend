@@ -33,4 +33,16 @@ public class MessageDTO {
     public String getChatID() {
         return chatID;
     }
+
+    public void setChatID(String chatID) {
+        this.chatID = chatID;
+    }
+
+    public void setMessageText(String messageText) {
+        this.messageText = messageText;
+    }
+
+    public void setAiOptions(String aiOptions) {
+        this.aiOptions = aiOptions;
+    }
 }
