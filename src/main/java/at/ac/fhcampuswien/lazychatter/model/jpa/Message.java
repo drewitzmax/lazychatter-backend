@@ -51,4 +51,8 @@ public class Message {
     public AiMessageOption getAiOption() {
         return aiOption;
     }
+
+    public void setTextMessage(String textMessage) {
+        this.textMessage = textMessage;
+    }
 }

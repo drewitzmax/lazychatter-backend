@@ -44,4 +44,15 @@ public class MessageServiceImpl implements MessageService {
             throw new RuntimeException("You're not authorized to manipulate this object");
         }
     }
+
+    @Override
+    public void updateMessage(MessageDTO message, Authentication auth) {
+        Message localMessage = messageRepository.getReferenceById(message.getId());
+        if(localMessage.getSender().equals(auth.getName())){
+            throw new RuntimeException("User not authorized to modify this recource");
+        }
+        localMessage.setTextMessage(message.getMessageText());
+
+        messageRepository.save(localMessage);
+    }
 }

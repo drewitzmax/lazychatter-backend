@@ -30,6 +30,11 @@ public class MessageController {
         return messages;
     }
 
+    @PutMapping
+    public void updateMessage(@RequestBody MessageDTO message, Authentication auth){
+        messageService.updateMessage(message, auth);
+    }
+
     @DeleteMapping(path="/{messageId}")
     public void deleteMessageById(@PathVariable String messageId, Authentication auth){
         messageService.deleteMessageById(messageId, auth);

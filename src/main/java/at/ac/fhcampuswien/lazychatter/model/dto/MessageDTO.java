@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class MessageDTO {
     @JsonProperty
+    String id;
+    @JsonProperty
     String chatID;
     @JsonProperty
     String messageText;
@@ -15,6 +17,7 @@ public class MessageDTO {
     public MessageDTO(){}
 
     public MessageDTO (Message message){
+        this.id = message.getId();
         this.chatID = message.getId();
         this.messageText = message.getTextMessage();
         if(message.getAiOption() != null)
@@ -44,5 +47,9 @@ public class MessageDTO {
 
     public void setAiOptions(String aiOptions) {
         this.aiOptions = aiOptions;
+    }
+
+    public String getId() {
+        return id;
     }
 }

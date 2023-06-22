@@ -12,4 +12,6 @@ public interface MessageService {
     List<Message> getMessagesByChatId(String chatId, Authentication auth) throws Exception;
 
     void deleteMessageById(String messageId, Authentication auth);
+
+    void updateMessage(MessageDTO message, Authentication auth);
 }
