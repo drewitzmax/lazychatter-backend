@@ -5,6 +5,7 @@ import at.ac.fhcampuswien.lazychatter.model.dto.UserDto;
 import at.ac.fhcampuswien.lazychatter.model.dto.UserInput;
 import at.ac.fhcampuswien.lazychatter.model.jpa.User;
 import at.ac.fhcampuswien.lazychatter.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,6 +45,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<String> getUserList() {
         return this.userRepository.findAll().stream().map(user -> user.getUsername()).toList();
+    }
+
+    @Override
+    public void updateMe(UserInput user, Authentication auth) {
+        User me = getMe(auth);
+        me.setUsername(user.getUsername());
+        me.setPassword(user.getPassword());
+        userRepository.saveAndFlush(me);
+    }
+
+    @Override
+    @Transactional
+    public void deleteMe(Authentication auth) {
+        userRepository.deleteByUsername(auth.getName());
     }
 
     private void validateUserInput(UserInput user) throws IllegalArgumentException{

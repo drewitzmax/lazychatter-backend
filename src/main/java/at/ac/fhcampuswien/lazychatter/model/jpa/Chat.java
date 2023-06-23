@@ -1,6 +1,8 @@
 package at.ac.fhcampuswien.lazychatter.model.jpa;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,7 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     @ManyToMany(mappedBy = "chatList")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<User> participants;
     @OneToMany(mappedBy = "chat")
     private List<Message> messages;

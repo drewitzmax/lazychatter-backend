@@ -14,6 +14,9 @@ public class MessageDTO {
     @JsonProperty
     String aiOptions;
 
+    @JsonProperty
+    String sender;
+
     public MessageDTO(){}
 
     public MessageDTO (Message message){
@@ -22,6 +25,8 @@ public class MessageDTO {
         this.messageText = message.getTextMessage();
         if(message.getAiOption() != null)
             this.aiOptions = message.getAiOption().name();
+        if(message.getSender() != null)
+            this.sender = message.getSender().getUsername();
     }
 
 

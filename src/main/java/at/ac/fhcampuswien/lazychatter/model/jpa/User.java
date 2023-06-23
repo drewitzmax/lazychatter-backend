@@ -2,6 +2,9 @@ package at.ac.fhcampuswien.lazychatter.model.jpa;
 
 import at.ac.fhcampuswien.lazychatter.model.dto.UserInput;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +26,7 @@ public class User implements UserDetails {
     private String passwordHash;
     @ManyToMany
     @JoinTable(name="USER_CHAT")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Chat> chatList;
 
     public User() {
@@ -72,6 +76,14 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.passwordHash = this.hashPassword(password);
     }
 
     public String getPasswordHash() {

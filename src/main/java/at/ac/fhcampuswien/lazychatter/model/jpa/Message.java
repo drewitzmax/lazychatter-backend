@@ -2,6 +2,8 @@ package at.ac.fhcampuswien.lazychatter.model.jpa;
 
 import at.ac.fhcampuswien.lazychatter.model.dto.MessageDTO;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity(name = "message")
 @Table(name = "MESSAGE")
@@ -13,8 +15,9 @@ public class Message {
     private String textMessage;
     @ManyToOne
     private Chat chat;
-    @ManyToOne(optional = false)
-    @JoinColumn(name="SENDER_ID", nullable = false, updatable = false)
+    @ManyToOne()
+    @JoinColumn(name="SENDER_ID", updatable = false)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private User sender;
     @Column(name = "AI_OPTION")
     @Enumerated(EnumType.STRING)

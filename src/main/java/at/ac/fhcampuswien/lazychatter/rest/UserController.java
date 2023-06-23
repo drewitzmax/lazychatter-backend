@@ -32,6 +32,30 @@ public class UserController {
         }
     }
 
+    @PutMapping(consumes= MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> updatProfile(@RequestBody UserInput user, Authentication auth){
+        try{
+            userService.updateMe(user, auth);
+            return ResponseEntity.ok("User successfully created!");
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (UserAlreadyExistsException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping(produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> updatProfile(Authentication auth){
+        try{
+            userService.deleteMe(auth);
+            return ResponseEntity.ok("User successfully deleted!");
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (UserAlreadyExistsException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     @PostMapping(path = "/register",
             consumes= MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.TEXT_PLAIN_VALUE)

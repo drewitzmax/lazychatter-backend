@@ -13,4 +13,8 @@ public interface UserService {
     User getMe(Authentication auth);
 
     List<String> getUserList();
+
+    void updateMe(UserInput user, Authentication auth);
+
+    void deleteMe(Authentication auth);
 }
