@@ -60,7 +60,7 @@ public class ChatServiceImpl implements ChatService{
     }
 
     private Chat addUserToChat(String participant, Chat chat) throws UsernameNotFoundException{
-        Optional<User> userOptional = userRepository.findById(participant);
+        Optional<User> userOptional = userRepository.findUserByUsername(participant);
         if(userOptional.isEmpty()){
             throw new UsernameNotFoundException("User does not exist and can not be added");
         }
