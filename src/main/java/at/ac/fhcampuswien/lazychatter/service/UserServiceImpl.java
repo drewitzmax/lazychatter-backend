@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -38,6 +39,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getMe(Authentication auth) throws UsernameNotFoundException {
         return getUserByName(auth.getName());
+    }
+
+    @Override
+    public List<String> getUserList() {
+        return this.userRepository.findAll().stream().map(user -> user.getUsername()).toList();
     }
 
     private void validateUserInput(UserInput user) throws IllegalArgumentException{
