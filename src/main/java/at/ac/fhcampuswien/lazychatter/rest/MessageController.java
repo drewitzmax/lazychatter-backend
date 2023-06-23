@@ -30,7 +30,7 @@ public class MessageController {
         return messages;
     }
 
-    @PutMapping
+    @PatchMapping
     public void updateMessage(@RequestBody MessageDTO message, Authentication auth){
         messageService.updateMessage(message, auth);
     }
