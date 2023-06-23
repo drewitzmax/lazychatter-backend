@@ -7,6 +7,7 @@ import at.ac.fhcampuswien.lazychatter.model.openai.ChatCompletionRequest;
 import at.ac.fhcampuswien.lazychatter.model.openai.ChatCompletionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -24,10 +25,11 @@ public class AiServiceImpl implements AiService{
 
     @Override
     public MessageDTO enrichWithAi(MessageDTO dto, Authentication auth) {
+        if(dto.getAiOptions() == null || dto.getAiOptions().isEmpty()) return dto;
         switch(AiMessageOption.valueOf(dto.getAiOptions())){
             case GPT -> answerViaGPT(dto, auth);
         }
-        return null;
+        return dto;
     }
 
     private void answerViaGPT(MessageDTO messageDTO, Authentication auth){
@@ -37,9 +39,13 @@ public class AiServiceImpl implements AiService{
                 .baseUrl(OPEN_AI_API_URL + "chat/completions")
                 .defaultHeader("Authorization", "Bearer " + openAiKey)
                 .build();
-       ChatCompletionResponse repsonse =
-               client.post().bodyValue(new ChatCompletionRequest(chat, auth.getName())).retrieve()
-                       .bodyToMono(ChatCompletionResponse.class).block();
-       messageDTO.setMessageText(repsonse.getChoices().get(0).getMessage().getContent());
+       WebClient.RequestHeadersSpec request =
+               client.post().bodyValue(new ChatCompletionRequest(chat, auth.getName()));
+       var response = request.retrieve()
+               .onStatus(HttpStatusCode::is4xxClientError , response1 -> {
+                   response1.bodyToMono(String.class).log();
+                   return response1.bodyToMono(String.class).map(Exception::new);
+               }).bodyToMono(ChatCompletionResponse.class).block();
+       messageDTO.setMessageText(response.getChoices().get(0).getMessage().getContent());
     }
 }

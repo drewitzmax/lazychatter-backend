@@ -1,10 +1,10 @@
 package at.ac.fhcampuswien.lazychatter.model.openai;
 
 public enum OpenAiRole {
-    USER,
-    SYSTEM,
-    ASSISTANT,
-    FUNCTION;
+    user,
+    system,
+    assistant,
+    function;
 
     @Override
     public String toString() {

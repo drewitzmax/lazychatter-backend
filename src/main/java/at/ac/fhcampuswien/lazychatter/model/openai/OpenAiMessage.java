@@ -12,12 +12,12 @@ public class OpenAiMessage {
     OpenAiMessage(){}
     OpenAiMessage(Message message){
         this.content = message.getSender().getUsername() + ": " + message.getTextMessage();
-        this.role = OpenAiRole.USER;
+        this.role = OpenAiRole.user;
     }
 
     public static OpenAiMessage ApiAnswerRequest(String requestingUser) {
         OpenAiMessage message = new OpenAiMessage();
-        message.role = OpenAiRole.SYSTEM;
+        message.role = OpenAiRole.system;
         message.content = "Answer as if you were " + requestingUser;
         return message;
     }
