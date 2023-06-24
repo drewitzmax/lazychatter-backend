@@ -16,7 +16,7 @@ public class ChatController {
     @Autowired
     private ChatService chatService;
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ChatDTO startNewChat(Authentication auth, @RequestBody String[] participants) {
         try {
             return new ChatDTO(this.chatService.createNewChat(auth, participants));
@@ -25,7 +25,7 @@ public class ChatController {
         }
     }
 
-    @PostMapping(path = "/{chatId}/user", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/{chatId}/user", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ChatDTO addUsersToChat(Authentication auth,@PathVariable String chatId, @RequestBody String[] newParticipants){
         try{
             return new ChatDTO(this.chatService.addUsersToChat(auth, newParticipants, chatId));

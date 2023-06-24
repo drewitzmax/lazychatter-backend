@@ -24,7 +24,7 @@ public class MessageController {
         messageService.sendMessage(message, auth);
     }
 
-    @GetMapping(path = "/chat/{chatId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/chat/{chatId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public List<MessageDTO> getMessagesByChatId(@PathVariable String chatId, Authentication auth) throws Exception {
         List<MessageDTO> messages = messageService.getMessagesByChatId(chatId, auth).stream().map(message -> new MessageDTO(message)).toList();
         return messages;
