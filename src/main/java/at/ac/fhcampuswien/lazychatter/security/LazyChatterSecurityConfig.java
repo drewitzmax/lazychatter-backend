@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -35,7 +36,7 @@ public class LazyChatterSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()))
                 .headers(headers-> headers.frameOptions().disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/user/register", "/login", "/h2-console/**").permitAll()
