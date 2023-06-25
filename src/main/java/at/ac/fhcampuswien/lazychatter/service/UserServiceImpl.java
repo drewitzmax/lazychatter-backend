@@ -39,7 +39,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getMe(Authentication auth) throws UsernameNotFoundException {
-        return getUserByName(auth.getName());
+        User me = getUserByName(auth.getName());
+        me.getChatList().size();
+        return me;
     }
 
     @Override
