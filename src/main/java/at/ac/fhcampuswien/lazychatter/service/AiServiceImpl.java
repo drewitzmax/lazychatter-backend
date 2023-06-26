@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.lazychatter.service;
 
+import at.ac.fhcampuswien.lazychatter.model.compliment.Compliment;
 import at.ac.fhcampuswien.lazychatter.model.dto.MessageDTO;
 import at.ac.fhcampuswien.lazychatter.model.evilinstult.InsultResponse;
 import at.ac.fhcampuswien.lazychatter.model.jpa.AiMessageOption;
@@ -20,6 +21,7 @@ public class AiServiceImpl implements AiService {
     private String openAiKey;
 
     private static String EVIL_INSULT_API_URL = "https://evilinsult.com/generate_insult.php";
+    private static String COMPLIMENT_API_URL = "https://complimentr.com/api";
 
     @Autowired
     ChatService chatService;
@@ -30,6 +32,7 @@ public class AiServiceImpl implements AiService {
         switch (AiMessageOption.valueOf(dto.getAiOptions())) {
             case GPT -> answerViaGPT(dto, auth);
             case INSULT -> answerWithInsult(dto);
+            case COMPLIMENT -> answerWithCompliment(dto);
         }
         return dto;
     }
@@ -43,6 +46,15 @@ public class AiServiceImpl implements AiService {
                         .queryParam("type", "json").build());
         InsultResponse response = request.retrieve().bodyToMono(InsultResponse.class).block();
         dto.setMessageText(response.getInsult());
+    }
+
+    private void answerWithCompliment(MessageDTO dto){
+        WebClient client = WebClient.builder()
+                .baseUrl(COMPLIMENT_API_URL)
+                .build();
+        WebClient.RequestHeadersSpec request = client.get();
+        Compliment response = request.retrieve().bodyToMono(Compliment.class).block();
+        dto.setMessageText(response.getCompliment());
     }
 
     private void answerViaGPT(MessageDTO messageDTO, Authentication auth) {
