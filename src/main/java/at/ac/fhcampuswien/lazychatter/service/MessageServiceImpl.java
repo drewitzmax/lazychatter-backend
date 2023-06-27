@@ -37,7 +37,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void deleteMessageById(String messageId, Authentication auth) {
-        Message message = messageRepository.getReferenceById(messageId);
+        Message message = messageRepository.findById(messageId).get();
         if(message.getSender().equals(auth.getName())){
             messageRepository.delete(message);
         } else {
@@ -47,7 +47,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void updateMessage(MessageDTO message, Authentication auth) {
-        Message localMessage = messageRepository.getReferenceById(message.getId());
+        Message localMessage = messageRepository.findById(message.getId()).get();
         if(localMessage.getSender().equals(auth.getName())){
             throw new RuntimeException("User not authorized to modify this recource");
         }
