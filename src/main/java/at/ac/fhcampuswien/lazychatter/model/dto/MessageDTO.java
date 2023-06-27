@@ -21,7 +21,7 @@ public class MessageDTO {
 
     public MessageDTO (Message message){
         this.id = message.getId();
-        this.chatID = message.getId();
+        this.chatID = message.getChat().getId();
         this.messageText = message.getTextMessage();
         if(message.getAiOption() != null)
             this.aiOptions = message.getAiOption().name();
