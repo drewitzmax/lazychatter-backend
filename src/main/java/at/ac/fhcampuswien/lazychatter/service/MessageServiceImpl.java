@@ -38,7 +38,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void deleteMessageById(String messageId, Authentication auth) {
         Message message = messageRepository.findById(messageId).get();
-        if(message.getSender().equals(auth.getName())){
+        if(message.getSender().getUsername().equals(auth.getName())){
             messageRepository.delete(message);
         } else {
             throw new RuntimeException("You're not authorized to manipulate this object");
