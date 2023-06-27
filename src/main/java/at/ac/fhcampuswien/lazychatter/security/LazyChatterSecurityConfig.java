@@ -41,7 +41,7 @@ public class LazyChatterSecurityConfig {
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(Arrays.asList("*"));
-                    config.setAllowedMethods(Arrays.asList("GET","POST","HEAD","PUT","PATCH"));
+                    config.setAllowedMethods(Arrays.asList("GET","POST","HEAD","PUT","PATCH", "DELETE"));
                     config.setAllowedHeaders(Arrays.asList("*"));
                     return config;
                 }))
