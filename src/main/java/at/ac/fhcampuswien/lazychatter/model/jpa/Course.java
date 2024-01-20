@@ -14,15 +14,16 @@ public class Course {
     private String id;
     private String name;
     @ManyToOne
-    @JsonIgnoreProperties("myCourses")
+    @JsonIgnoreProperties({"lecturingCourses", "attendingCourses", "myCourses"})
     private User owner;
     @ManyToMany(mappedBy = "lecturingCourses")
-    @JsonIgnoreProperties(value = {"lecturingCourses"})
+    @JsonIgnoreProperties({"lecturingCourses", "attendingCourses", "myCourses"})
     private List<User> lecturers;
     @ManyToMany(mappedBy = "attendingCourses")
+    @JsonIgnoreProperties({"lecturingCourses", "attendingCourses", "myCourses"})
     private List<User> attendees;
     @OneToMany
-    @JsonIgnoreProperties("course")
+    @JsonIgnoreProperties({"course", "attendees"})
     private List<Session> sessions;
 
     public Course(){

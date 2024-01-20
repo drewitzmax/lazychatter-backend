@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.lazychatter.rest;
 
 import at.ac.fhcampuswien.lazychatter.model.dto.AddSessionRequest;
+import at.ac.fhcampuswien.lazychatter.model.dto.AttendanceEntry;
 import at.ac.fhcampuswien.lazychatter.model.dto.CourseCreationRequest;
 import at.ac.fhcampuswien.lazychatter.model.jpa.Course;
 import at.ac.fhcampuswien.lazychatter.model.jpa.Session;
@@ -10,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.enterprise.inject.Produces;
 import java.util.List;
 
 @RestController
@@ -43,5 +43,10 @@ public class CourseController {
     @PostMapping(path = "/attend/{password}")
     public Session attendOnSession(@PathVariable String password, Authentication auth) throws IllegalAccessException {
         return this.courseService.attendOnSession(password, auth);
+    }
+
+    @GetMapping(path = "/report/{courseId}")
+    public List<AttendanceEntry> getAttendanceReport(@PathVariable String courseId){
+        return this.courseService.getAttendanceReport(courseId);
     }
 }

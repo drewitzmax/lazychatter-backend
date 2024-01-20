@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.lazychatter.model.jpa;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
@@ -18,7 +19,8 @@ public class Session {
     @ManyToOne
     private User lecturer;
     @ManyToOne
-    @JsonIgnoreProperties("sessions")
+    @JsonIgnoreProperties({"sessions"})
+    @JsonIgnore
     private Course course;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime date;
@@ -29,6 +31,7 @@ public class Session {
     @JoinTable(name = "SESSION_ATTENDEES")
     @OnDelete(action = OnDeleteAction.NO_ACTION)
     @JsonIgnoreProperties({"myCourses", "attendingCourses", "lecturingCourses"})
+    @JsonIgnore
     private List<User> attendees;
 
     public String getId() {

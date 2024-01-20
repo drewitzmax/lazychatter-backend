@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.lazychatter.service;
 
 import at.ac.fhcampuswien.lazychatter.model.dto.AddSessionRequest;
+import at.ac.fhcampuswien.lazychatter.model.dto.AttendanceEntry;
 import at.ac.fhcampuswien.lazychatter.model.dto.CourseCreationRequest;
 import at.ac.fhcampuswien.lazychatter.model.jpa.Course;
 import at.ac.fhcampuswien.lazychatter.model.jpa.Session;
@@ -18,4 +19,5 @@ public interface CourseService {
     Session addSessionToCourse(AddSessionRequest request, Authentication auth);
     String getSessionPassword(String id, Authentication auth) throws IllegalAccessException;
     Session attendOnSession(String password, Authentication auth) throws IllegalAccessException;
+    List<AttendanceEntry> getAttendanceReport(String courseId);
 }

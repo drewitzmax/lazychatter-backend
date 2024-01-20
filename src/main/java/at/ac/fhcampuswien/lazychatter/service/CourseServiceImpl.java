@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.lazychatter.service;
 
 import at.ac.fhcampuswien.lazychatter.model.dto.AddSessionRequest;
+import at.ac.fhcampuswien.lazychatter.model.dto.AttendanceEntry;
 import at.ac.fhcampuswien.lazychatter.model.dto.CourseCreationRequest;
 import at.ac.fhcampuswien.lazychatter.model.jpa.Course;
 import at.ac.fhcampuswien.lazychatter.model.jpa.Session;
@@ -13,17 +14,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Service
-public class CourseServiceImpl implements CourseService{
+public class CourseServiceImpl implements CourseService {
     @Autowired
     private CourseRepository courseRepository;
     @Autowired
     UserRepository userRepository;
     @Autowired
     SessionRepository sessionRepository;
+
     @Override
     public List<Course> getAllCourses() {
         return courseRepository.findAll();
@@ -58,7 +61,7 @@ public class CourseServiceImpl implements CourseService{
     @Override
     public String getSessionPassword(String id, Authentication auth) throws IllegalAccessException {
         var session = this.sessionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Session does not exist"));
-        if(!(session.getCourse().getOwner().getUsername().equals(auth.getName()) || session.getLecturer().getUsername().equals(auth.getName()))){
+        if (!(session.getCourse().getOwner().getUsername().equals(auth.getName()) || session.getLecturer().getUsername().equals(auth.getName()))) {
             throw new IllegalAccessException("User is neither owner nor lecturer");
         }
         var pass = UUID.randomUUID().toString().substring(0, 5);
@@ -71,13 +74,31 @@ public class CourseServiceImpl implements CourseService{
     @Override
     public Session attendOnSession(String password, Authentication auth) throws IllegalAccessException {
         var session = this.sessionRepository.findSessionByCurrentSessionPassword(password);
-        if(session == null) throw new IllegalAccessException("Invalid Password");
-        if(session.getPasswordExpirationTime().isAfter(LocalDateTime.now())){
+        if (session == null) throw new IllegalAccessException("Invalid Password");
+        if (session.getPasswordExpirationTime().isAfter(LocalDateTime.now())) {
             var me = userRepository.findUserByUsername(auth.getName()).orElseThrow(() -> new IllegalAccessException("Unknown user"));
             session.getAttendees().add(me);
-
+            if (session.getCourse().getAttendees().stream().filter(e -> e.getUsername().equals(me.getUsername())).findAny().isEmpty()) {
+                session.getCourse().getAttendees().add(me);
+                me.getAttendingCourses().add(session.getCourse());
+            }
             return sessionRepository.save(session);
         }
         throw new IllegalAccessException("Password has expired");
+    }
+
+    @Override
+    public List<AttendanceEntry> getAttendanceReport(String courseId) {
+        var course = this.courseRepository.findById(courseId).orElseThrow();
+        var result = new ArrayList<AttendanceEntry>();
+        course.getAttendees().forEach(attendee -> {
+            float totalSessions = course.getSessions().size();
+            float attendedSessions = course.getSessions().stream()
+                    .filter(e -> e.getAttendees().stream().anyMatch(att -> att.getUsername().equals(attendee.getUsername()))).count();
+            float percentage = (attendedSessions / totalSessions) * 100.0f;
+            result.add(new AttendanceEntry(attendee.getUsername(), percentage));
+        });
+
+        return result;
     }
 }
