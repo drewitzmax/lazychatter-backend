@@ -4,23 +4,4 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-public class UserInput {
-    @JsonProperty
-    private String username;
-    @JsonProperty
-    private String password;
-    @JsonProperty
-    private List<String> chatIds;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public List<String> getChatIds() {
-        return chatIds;
-    }
-}
+public record UserInput (@JsonProperty String username, @JsonProperty String password, @JsonProperty String type){ }

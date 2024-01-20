@@ -28,6 +28,17 @@ public class User implements UserDetails {
     @JoinTable(name="USER_CHAT")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Chat> chatList;
+    @OneToMany(mappedBy = "owner")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<Course> myCourses;
+    @ManyToMany
+    @JoinTable(name = "COURSES_LECTURERS")
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    private List<Course> lecturingCourses;
+    @ManyToMany
+    @JoinTable(name = "COURSES_ATTENDEES")
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    private List<Course> attendingCourses;
 
     public User() {
         this.username = null;
@@ -35,8 +46,8 @@ public class User implements UserDetails {
     }
 
     public User(UserInput userInput){
-        this.username = userInput.getUsername();
-        this.passwordHash = this.hashPassword(userInput.getPassword());
+        this.username = userInput.username();
+        this.passwordHash = this.hashPassword(userInput.password());
     }
 
     public String getId() {

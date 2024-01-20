@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createUser(UserInput user){
         validateUserInput(user);
-        Optional<User> existingUser = userRepository.findUserByUsername(user.getUsername());
+        Optional<User> existingUser = userRepository.findUserByUsername(user.username());
 
         if(existingUser.isPresent()) throw new UserAlreadyExistsException("Username is already taken");
         userRepository.save(new User(user));
@@ -52,8 +52,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateMe(UserInput user, Authentication auth) {
         User me = getMe(auth);
-        me.setUsername(user.getUsername());
-        me.setPassword(user.getPassword());
+        me.setUsername(user.username());
+        me.setPassword(user.password());
         userRepository.saveAndFlush(me);
     }
 
@@ -64,8 +64,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateUserInput(UserInput user) throws IllegalArgumentException{
-        validateUsername(user.getUsername());
-        validatePassword(user.getPassword());
+        validateUsername(user.username());
+        validatePassword(user.password());
     }
 
     private void validateUsername(String username){
