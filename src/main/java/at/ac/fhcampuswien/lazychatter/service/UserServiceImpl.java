@@ -1,8 +1,7 @@
 package at.ac.fhcampuswien.lazychatter.service;
 
 import at.ac.fhcampuswien.lazychatter.error.UserAlreadyExistsException;
-import at.ac.fhcampuswien.lazychatter.model.dto.UserDto;
-import at.ac.fhcampuswien.lazychatter.model.dto.UserInput;
+import at.ac.fhcampuswien.lazychatter.model.dto.UserRegistrationRequest;
 import at.ac.fhcampuswien.lazychatter.model.jpa.User;
 import at.ac.fhcampuswien.lazychatter.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -20,7 +19,7 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
 
     @Override
-    public void createUser(UserInput user){
+    public void createUser(UserRegistrationRequest user){
         validateUserInput(user);
         Optional<User> existingUser = userRepository.findUserByUsername(user.username());
 
@@ -50,7 +49,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateMe(UserInput user, Authentication auth) {
+    public void updateMe(UserRegistrationRequest user, Authentication auth) {
         User me = getMe(auth);
         me.setUsername(user.username());
         me.setPassword(user.password());
@@ -63,7 +62,7 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteByUsername(auth.getName());
     }
 
-    private void validateUserInput(UserInput user) throws IllegalArgumentException{
+    private void validateUserInput(UserRegistrationRequest user) throws IllegalArgumentException{
         validateUsername(user.username());
         validatePassword(user.password());
     }

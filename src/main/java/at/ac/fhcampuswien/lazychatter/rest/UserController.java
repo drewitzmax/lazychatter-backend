@@ -2,7 +2,7 @@ package at.ac.fhcampuswien.lazychatter.rest;
 
 import at.ac.fhcampuswien.lazychatter.error.UserAlreadyExistsException;
 import at.ac.fhcampuswien.lazychatter.model.dto.UserDto;
-import at.ac.fhcampuswien.lazychatter.model.dto.UserInput;
+import at.ac.fhcampuswien.lazychatter.model.dto.UserRegistrationRequest;
 import at.ac.fhcampuswien.lazychatter.model.jpa.User;
 import at.ac.fhcampuswien.lazychatter.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class UserController {
 
     @PutMapping(consumes= MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> updatProfile(@RequestBody UserInput user, Authentication auth){
+    public ResponseEntity<String> updatProfile(@RequestBody UserRegistrationRequest user, Authentication auth){
         try{
             userService.updateMe(user, auth);
             return ResponseEntity.ok("User successfully created!");
@@ -59,7 +59,7 @@ public class UserController {
     @PostMapping(path = "/register",
             consumes= MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> register(@RequestBody UserInput user){
+    public ResponseEntity<String> register(@RequestBody UserRegistrationRequest user){
         try{
             userService.createUser(user);
             return ResponseEntity.ok("User successfully created!");
