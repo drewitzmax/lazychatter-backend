@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>at.ac.fhcampuswien</groupId>
-    <artifactId>lazychatter</artifactId>
+    <artifactId>campattend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>lazychatter</name>
-    <description>lazychatter</description>
+    <name>campattend</name>
+    <description>campattend</description>
     <properties>
         <java.version>17</java.version>
     </properties>
