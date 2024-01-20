@@ -30,8 +30,13 @@ public class CourseController {
         return course;
     }
 
-    @PostMapping(path = "/{id}/session")
+    @PostMapping(path = "/session")
     public Session addNewSession(@RequestBody AddSessionRequest request, Authentication auth){
         return this.courseService.addSessionToCourse(request, auth);
+    }
+
+    @GetMapping(path="/session/password/{id}")
+    public String getSessionPassword(@PathVariable String id, Authentication auth) throws IllegalAccessException {
+        return this.courseService.getSessionPassword(id, auth);
     }
 }

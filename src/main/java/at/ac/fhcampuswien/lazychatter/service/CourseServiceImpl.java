@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class CourseServiceImpl implements CourseService{
@@ -51,5 +53,18 @@ public class CourseServiceImpl implements CourseService{
         session.setDate(request.date());
         course.addSession(session);
         return sessionRepository.save(session);
+    }
+
+    @Override
+    public String getSessionPassword(String id, Authentication auth) throws IllegalAccessException {
+        var session = this.sessionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Session does not exist"));
+        if(!(session.getCourse().getOwner().getUsername().equals(auth.getName()) || session.getLecturer().getUsername().equals(auth.getName()))){
+            throw new IllegalAccessException("User is neither owner nor lecturer");
+        }
+        var pass = UUID.randomUUID().toString().substring(0, 5);
+        session.setCurrentSessionPassword(pass);
+        session.setPasswordExpirationTime(LocalDateTime.now().plusSeconds(30));
+        sessionRepository.save(session);
+        return pass;
     }
 }

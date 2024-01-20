@@ -16,4 +16,5 @@ public interface CourseService {
     List<Course> getMyLecturingCourses(User me);
     Course addNewCourse(CourseCreationRequest request, Authentication auth);
     Session addSessionToCourse(AddSessionRequest request, Authentication auth);
+    String getSessionPassword(String id, Authentication auth) throws IllegalAccessException;
 }
