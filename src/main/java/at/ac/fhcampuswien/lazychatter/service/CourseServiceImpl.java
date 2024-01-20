@@ -67,4 +67,17 @@ public class CourseServiceImpl implements CourseService{
         sessionRepository.save(session);
         return pass;
     }
+
+    @Override
+    public Session attendOnSession(String password, Authentication auth) throws IllegalAccessException {
+        var session = this.sessionRepository.findSessionByCurrentSessionPassword(password);
+        if(session == null) throw new IllegalAccessException("Invalid Password");
+        if(session.getPasswordExpirationTime().isAfter(LocalDateTime.now())){
+            var me = userRepository.findUserByUsername(auth.getName()).orElseThrow(() -> new IllegalAccessException("Unknown user"));
+            session.getAttendees().add(me);
+
+            return sessionRepository.save(session);
+        }
+        throw new IllegalAccessException("Password has expired");
+    }
 }

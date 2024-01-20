@@ -39,4 +39,9 @@ public class CourseController {
     public String getSessionPassword(@PathVariable String id, Authentication auth) throws IllegalAccessException {
         return this.courseService.getSessionPassword(id, auth);
     }
+
+    @PostMapping(path = "/attend/{password}")
+    public Session attendOnSession(@PathVariable String password, Authentication auth) throws IllegalAccessException {
+        return this.courseService.attendOnSession(password, auth);
+    }
 }

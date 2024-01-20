@@ -28,6 +28,7 @@ public class Session {
     @ManyToMany
     @JoinTable(name = "SESSION_ATTENDEES")
     @OnDelete(action = OnDeleteAction.NO_ACTION)
+    @JsonIgnoreProperties({"myCourses", "attendingCourses", "lecturingCourses"})
     private List<User> attendees;
 
     public String getId() {

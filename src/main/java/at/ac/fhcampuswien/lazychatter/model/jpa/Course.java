@@ -1,7 +1,6 @@
 package at.ac.fhcampuswien.lazychatter.model.jpa;
 
 import at.ac.fhcampuswien.lazychatter.model.dto.CourseCreationRequest;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
